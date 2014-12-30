@@ -110,6 +110,7 @@ class RESTClient(object):
         return response.content().addCallback(self.got_content, eots_response)
 
     def got_content(self, content, response):
-        response.complete_content = content
-        response.complete_json = json.loads(content)
+        if content:
+            response.complete_content = content
+            response.complete_json = json.loads(content)
         return response
