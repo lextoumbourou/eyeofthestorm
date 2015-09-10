@@ -72,15 +72,17 @@ class AcceptsVersionNegotiator(VersionNegotiator):
 
         return version
 
-    def select_version(self, request, versions):
-        """
-        Return the resource for the current version.
+    def get_default(self, versions):
+        """Get highest version."""
+        return sorted(versions.keys(), reverse=True)[0]
 
-        Potentially we could try and order versions and choose the most
-        up to date one in the situation where a client has simply
-        forgotten to add the version.
-        """
+    def select_version(self, request, versions):
+        """Return the resource for the current version."""
         version = self.get_version(request)
+
+        if not version:
+            return versions[self.get_default(versions)]
+
         try:
             return versions[version]
         except (KeyError, ValueError):
